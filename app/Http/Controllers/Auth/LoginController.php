@@ -29,7 +29,7 @@ class LoginController extends Controller
 
         if (! $authenticated) {
             throw ValidationException::withMessages([
-                'email' => 'The provided credentials are incorrect.',
+                'email' => 'The provided credentials do not match any account in this system.',
             ]);
         }
 
