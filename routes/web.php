@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssetClassificationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
@@ -13,12 +14,15 @@ Route::get('/', function () {
 });
 
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::get('/login', [LoginController::class, 'create'])
+        ->name('login');
+
     Route::post('/login', [LoginController::class, 'store']);
 });
 
 Route::middleware(['auth', 'active'])->group(function () {
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::view('/dashboard', 'dashboard')
+        ->name('dashboard');
 
     Route::post('/logout', [LoginController::class, 'destroy'])
         ->name('logout');
@@ -40,5 +44,50 @@ Route::middleware(['auth', 'active'])->group(function () {
             'edit',
             'update',
         ]);
+
+        Route::get(
+            '/asset-classification',
+            [AssetClassificationController::class, 'index']
+        )->name('asset-classification.index');
+
+        Route::post(
+            '/asset-classification/types',
+            [AssetClassificationController::class, 'storeAssetType']
+        )->name('asset-classification.types.store');
+
+        Route::put(
+            '/asset-classification/types/{assetType}',
+            [AssetClassificationController::class, 'updateAssetType']
+        )->name('asset-classification.types.update');
+
+        Route::post(
+            '/asset-classification/subtypes',
+            [AssetClassificationController::class, 'storeAssetSubtype']
+        )->name('asset-classification.subtypes.store');
+
+        Route::put(
+            '/asset-classification/subtypes/{assetSubtype}',
+            [AssetClassificationController::class, 'updateAssetSubtype']
+        )->name('asset-classification.subtypes.update');
+
+        Route::post(
+            '/asset-classification/statuses',
+            [AssetClassificationController::class, 'storeAssetStatus']
+        )->name('asset-classification.statuses.store');
+
+        Route::put(
+            '/asset-classification/statuses/{assetStatus}',
+            [AssetClassificationController::class, 'updateAssetStatus']
+        )->name('asset-classification.statuses.update');
+
+        Route::post(
+            '/asset-classification/conditions',
+            [AssetClassificationController::class, 'storeAssetCondition']
+        )->name('asset-classification.conditions.store');
+
+        Route::put(
+            '/asset-classification/conditions/{assetCondition}',
+            [AssetClassificationController::class, 'updateAssetCondition']
+        )->name('asset-classification.conditions.update');
     });
 });
