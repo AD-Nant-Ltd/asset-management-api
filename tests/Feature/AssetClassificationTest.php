@@ -100,7 +100,7 @@ class AssetClassificationTest extends TestCase
         );
 
         $response->assertRedirect(
-            route('asset-classification.index')
+            route('asset-classification.index') . '#asset-types'
         );
 
         $this->assertDatabaseHas('asset_types', [
@@ -131,7 +131,7 @@ class AssetClassificationTest extends TestCase
         );
 
         $response->assertRedirect(
-            route('asset-classification.index')
+            route('asset-classification.index') . '#asset-types'
         );
 
         $this->assertDatabaseHas('asset_types', [
@@ -161,7 +161,7 @@ class AssetClassificationTest extends TestCase
         );
 
         $response->assertRedirect(
-            route('asset-classification.index')
+            route('asset-classification.index') . '#asset-subtypes'
         );
 
         $this->assertDatabaseHas('asset_subtypes', [
@@ -226,7 +226,7 @@ class AssetClassificationTest extends TestCase
         );
 
         $response->assertRedirect(
-            route('asset-classification.index')
+            route('asset-classification.index') . '#asset-subtypes'
         );
 
         $this->assertDatabaseHas('asset_subtypes', [
@@ -251,7 +251,7 @@ class AssetClassificationTest extends TestCase
         );
 
         $response->assertRedirect(
-            route('asset-classification.index')
+            route('asset-classification.index') . '#asset-statuses'
         );
 
         $this->assertDatabaseHas('asset_statuses', [
@@ -282,7 +282,7 @@ class AssetClassificationTest extends TestCase
         );
 
         $response->assertRedirect(
-            route('asset-classification.index')
+            route('asset-classification.index') . '#asset-statuses'
         );
 
         $this->assertDatabaseHas('asset_statuses', [
@@ -306,7 +306,7 @@ class AssetClassificationTest extends TestCase
         );
 
         $response->assertRedirect(
-            route('asset-classification.index')
+            route('asset-classification.index') . '#asset-conditions'
         );
 
         $this->assertDatabaseHas('asset_conditions', [
@@ -337,7 +337,7 @@ class AssetClassificationTest extends TestCase
         );
 
         $response->assertRedirect(
-            route('asset-classification.index')
+            route('asset-classification.index') . '#asset-conditions'
         );
 
         $this->assertDatabaseHas('asset_conditions', [
