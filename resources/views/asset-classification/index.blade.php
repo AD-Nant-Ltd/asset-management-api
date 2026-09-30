@@ -26,13 +26,24 @@
     </div>
 </nav>
 
-<main class="container py-5">
+@if (session('success'))
+    <div
+        class="alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3 shadow"
+        style="z-index: 1080; max-width: 420px;"
+        role="alert"
+    >
+        {{ session('success') }}
 
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+        ></button>
+    </div>
+@endif
+
+<main class="container py-5">
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -61,7 +72,7 @@
     </div>
 
     {{-- Asset Types --}}
-    <div class="card shadow-sm mb-4">
+    <div id="asset-types" class="card shadow-sm mb-4">
         <div class="card-header">
             <h2 class="h5 mb-0">Asset Types</h2>
         </div>
@@ -171,7 +182,7 @@
     </div>
 
     {{-- Asset Subtypes --}}
-    <div class="card shadow-sm mb-4">
+    <div id="asset-subtypes" class="card shadow-sm mb-4">
         <div class="card-header">
             <h2 class="h5 mb-0">Asset Subtypes</h2>
         </div>
@@ -200,6 +211,7 @@
                         @foreach ($assetTypes as $assetType)
                             <option value="{{ $assetType->id }}">
                                 {{ $assetType->asset_type }}
+
                                 @if (! $assetType->active)
                                     (Inactive)
                                 @endif
@@ -327,7 +339,7 @@
     </div>
 
     {{-- Asset Statuses --}}
-    <div class="card shadow-sm mb-4">
+    <div id="asset-statuses" class="card shadow-sm mb-4">
         <div class="card-header">
             <h2 class="h5 mb-0">Asset Statuses</h2>
         </div>
@@ -437,7 +449,7 @@
     </div>
 
     {{-- Asset Conditions --}}
-    <div class="card shadow-sm">
+    <div id="asset-conditions" class="card shadow-sm">
         <div class="card-header">
             <h2 class="h5 mb-0">Asset Conditions</h2>
         </div>

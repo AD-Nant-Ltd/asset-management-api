@@ -47,9 +47,9 @@ class AssetClassificationController extends Controller
             'active' => true,
         ]);
 
-        return redirect()
-            ->route('asset-classification.index')
-            ->with('success', 'Asset type created successfully.');
+        return redirect(
+            route('asset-classification.index') . '#asset-types'
+        )->with('success', 'Asset type created successfully.');
     }
 
     public function updateAssetType(Request $request, AssetType $assetType)
@@ -73,9 +73,9 @@ class AssetClassificationController extends Controller
             'active' => $request->boolean('active'),
         ]);
 
-        return redirect()
-            ->route('asset-classification.index')
-            ->with('success', 'Asset type updated successfully.');
+        return redirect(
+            route('asset-classification.index') . '#asset-types'
+        )->with('success', 'Asset type updated successfully.');
     }
 
     public function storeAssetSubtype(Request $request)
@@ -100,9 +100,9 @@ class AssetClassificationController extends Controller
             'active' => true,
         ]);
 
-        return redirect()
-            ->route('asset-classification.index')
-            ->with('success', 'Asset subtype created successfully.');
+        return redirect(
+            route('asset-classification.index') . '#asset-subtypes'
+        )->with('success', 'Asset subtype created successfully.');
     }
 
     public function updateAssetSubtype(
@@ -134,9 +134,9 @@ class AssetClassificationController extends Controller
             'active' => $request->boolean('active'),
         ]);
 
-        return redirect()
-            ->route('asset-classification.index')
-            ->with('success', 'Asset subtype updated successfully.');
+        return redirect(
+            route('asset-classification.index') . '#asset-subtypes'
+        )->with('success', 'Asset subtype updated successfully.');
     }
 
     public function storeAssetStatus(Request $request)
@@ -155,9 +155,9 @@ class AssetClassificationController extends Controller
             'active' => true,
         ]);
 
-        return redirect()
-            ->route('asset-classification.index')
-            ->with('success', 'Asset status created successfully.');
+        return redirect(
+            route('asset-classification.index') . '#asset-statuses'
+        )->with('success', 'Asset status created successfully.');
     }
 
     public function updateAssetStatus(
@@ -183,9 +183,9 @@ class AssetClassificationController extends Controller
             'active' => $request->boolean('active'),
         ]);
 
-        return redirect()
-            ->route('asset-classification.index')
-            ->with('success', 'Asset status updated successfully.');
+        return redirect(
+            route('asset-classification.index') . '#asset-statuses'
+        )->with('success', 'Asset status updated successfully.');
     }
 
     public function storeAssetCondition(Request $request)
@@ -204,9 +204,9 @@ class AssetClassificationController extends Controller
             'active' => true,
         ]);
 
-        return redirect()
-            ->route('asset-classification.index')
-            ->with('success', 'Asset condition created successfully.');
+        return redirect(
+            route('asset-classification.index') . '#asset-conditions'
+        )->with('success', 'Asset condition created successfully.');
     }
 
     public function updateAssetCondition(
@@ -232,8 +232,8 @@ class AssetClassificationController extends Controller
             'active' => $request->boolean('active'),
         ]);
 
-        return redirect()
-            ->route('asset-classification.index')
-            ->with('success', 'Asset condition updated successfully.');
+        return redirect(
+            route('asset-classification.index') . '#asset-conditions'
+        )->with('success', 'Asset condition updated successfully.');
     }
 }
