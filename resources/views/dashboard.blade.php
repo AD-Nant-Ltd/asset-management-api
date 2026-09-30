@@ -36,6 +36,7 @@
             </p>
 
             <div class="row g-4">
+
                 <div class="col-12 col-lg-6">
                     <div class="card h-100">
                         <div class="card-body">
@@ -71,7 +72,10 @@
                                 View, create and update staff records used for asset assignments and incidents.
                             </p>
 
-                            <a href="{{ route('staff.index') }}" class="btn btn-primary">
+                            <a
+                                href="{{ route('staff.index') }}"
+                                class="btn btn-primary"
+                            >
                                 Manage Staff
                             </a>
                         </div>
@@ -79,6 +83,7 @@
                 </div>
 
                 @if (auth()->user()->role->role_name === 'Administrator')
+
                     <div class="col-12 col-lg-6">
                         <div class="card h-100">
                             <div class="card-body">
@@ -88,13 +93,37 @@
                                     Grant, update and revoke application access for staff members.
                                 </p>
 
-                                <a href="{{ route('users.index') }}" class="btn btn-primary">
+                                <a
+                                    href="{{ route('users.index') }}"
+                                    class="btn btn-primary"
+                                >
                                     Manage Application Users
                                 </a>
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-12 col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h2 class="h5">Asset Classification</h2>
+
+                                <p class="text-muted">
+                                    Configure asset types, subtypes, statuses and conditions used throughout the system.
+                                </p>
+
+                                <a
+                                    href="{{ route('asset-classification.index') }}"
+                                    class="btn btn-primary"
+                                >
+                                    Manage Asset Classification
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                 @endif
+
             </div>
         </div>
     </div>
