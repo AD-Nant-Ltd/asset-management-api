@@ -31,12 +31,12 @@
         <div class="col-12">
             <h1 class="mb-3">Dashboard</h1>
 
-            <p class="text-muted">
+            <p class="text-muted mb-4">
                 Welcome to the Asset Management System.
             </p>
 
             <div class="row g-4">
-                <div class="col-12 col-lg-7">
+                <div class="col-12 col-lg-6">
                     <div class="card h-100">
                         <div class="card-body">
                             <h2 class="h5">Authenticated User</h2>
@@ -62,7 +62,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-5">
+                <div class="col-12 col-lg-6">
                     <div class="card h-100">
                         <div class="card-body">
                             <h2 class="h5">Staff Management</h2>
@@ -77,6 +77,24 @@
                         </div>
                     </div>
                 </div>
+
+                @if (auth()->user()->role->role_name === 'Administrator')
+                    <div class="col-12 col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h2 class="h5">User Administration</h2>
+
+                                <p class="text-muted">
+                                    Grant, update and revoke application access for staff members.
+                                </p>
+
+                                <a href="{{ route('users.index') }}" class="btn btn-primary">
+                                    Manage Application Users
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
