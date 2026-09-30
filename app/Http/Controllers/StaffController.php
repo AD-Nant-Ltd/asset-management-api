@@ -10,8 +10,8 @@ class StaffController extends Controller
 {
     public function index()
     {
-        $staff = Staff::orderBy('surname')
-            ->orderBy('forename')
+        $staff = Staff::orderBy('forename')
+            ->orderBy('surname')
             ->get();
 
         return view('staff.index', compact('staff'));
