@@ -5,9 +5,9 @@
 @section('content')
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
     <div class="container">
-        <span class="navbar-brand">
+        <a class="navbar-brand" href="{{ route('dashboard') }}">
             Asset Management
-        </span>
+        </a>
 
         <div class="d-flex align-items-center gap-3">
             <span class="text-light">
@@ -35,27 +35,47 @@
                 Welcome to the Asset Management System.
             </p>
 
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="h5">Authenticated User</h2>
+            <div class="row g-4">
+                <div class="col-12 col-lg-7">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h5">Authenticated User</h2>
 
-                    <dl class="row mb-0">
-                        <dt class="col-sm-3">Name</dt>
-                        <dd class="col-sm-9">
-                            {{ auth()->user()->staff->forename }}
-                            {{ auth()->user()->staff->surname }}
-                        </dd>
+                            <dl class="row mb-0">
+                                <dt class="col-sm-3">Name</dt>
+                                <dd class="col-sm-9">
+                                    {{ auth()->user()->staff->forename }}
+                                    {{ auth()->user()->staff->surname }}
+                                </dd>
 
-                        <dt class="col-sm-3">Email</dt>
-                        <dd class="col-sm-9">
-                            {{ auth()->user()->email }}
-                        </dd>
+                                <dt class="col-sm-3">Email</dt>
+                                <dd class="col-sm-9">
+                                    {{ auth()->user()->email }}
+                                </dd>
 
-                        <dt class="col-sm-3">Role</dt>
-                        <dd class="col-sm-9">
-                            {{ auth()->user()->role->role_name }}
-                        </dd>
-                    </dl>
+                                <dt class="col-sm-3">Role</dt>
+                                <dd class="col-sm-9">
+                                    {{ auth()->user()->role->role_name }}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-5">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h5">Staff Management</h2>
+
+                            <p class="text-muted">
+                                View, create and update staff records used for asset assignments and incidents.
+                            </p>
+
+                            <a href="{{ route('staff.index') }}" class="btn btn-primary">
+                                Manage Staff
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
