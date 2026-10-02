@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AssetClassificationController;
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
@@ -35,6 +36,20 @@ Route::middleware(['auth', 'active'])->group(function () {
         'edit',
         'update',
     ]);
+
+    Route::resource('assets', AssetController::class)->only([
+        'index',
+        'create',
+        'store',
+        'show',
+        'edit',
+        'update',
+    ]);
+
+    Route::patch(
+        '/assets/{asset}/archive',
+        [AssetController::class, 'archive']
+    )->name('assets.archive');
 
     Route::middleware('admin')->group(function () {
         Route::resource('users', UserController::class)->only([

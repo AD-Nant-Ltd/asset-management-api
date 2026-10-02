@@ -37,6 +37,7 @@
 
             <div class="row g-4">
 
+                {{-- Authenticated User --}}
                 <div class="col-12 col-lg-6">
                     <div class="card h-100">
                         <div class="card-body">
@@ -63,6 +64,27 @@
                     </div>
                 </div>
 
+                {{-- Asset Management --}}
+                <div class="col-12 col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="h5">Asset Management</h2>
+
+                            <p class="text-muted">
+                                View, create and maintain organisational asset records throughout their lifecycle.
+                            </p>
+
+                            <a
+                                href="{{ route('assets.index') }}"
+                                class="btn btn-primary"
+                            >
+                                Manage Assets
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Staff Management --}}
                 <div class="col-12 col-lg-6">
                     <div class="card h-100">
                         <div class="card-body">
@@ -82,6 +104,7 @@
                     </div>
                 </div>
 
+                {{-- Administrator-only functionality --}}
                 @if (auth()->user()->role->role_name === 'Administrator')
 
                     <div class="col-12 col-lg-6">
