@@ -71,6 +71,64 @@ class AssetAssignmentController extends Controller
 
         return redirect()
             ->route('assets.show', $asset)
-            ->with('success', 'Asset assigned successfully.');
+            ->with(
+                'success',
+                'Asset assigned successfully.'
+            );
+    }
+
+    public function createReturn(
+        Asset $asset,
+        AssetAssignmentService $assignmentService
+    ) {
+        $asset->load([
+            'assetSubtype.assetType',
+            'assetStatus',
+            'assetCondition',
+            'activeAssignment.assignedTo',
+            'activeAssignment.assignedBy.staff',
+        ]);
+
+        $assignment = $assignmentService
+            ->ensureAssetCanBeReturned($asset);
+
+        $assignment->load([
+            'assignedTo',
+            'assignedBy.staff',
+        ]);
+
+        return view(
+            'asset-assignments.return',
+            compact(
+                'asset',
+                'assignment'
+            )
+        );
+    }
+
+    public function storeReturn(
+        Request $request,
+        Asset $asset,
+        AssetAssignmentService $assignmentService
+    ) {
+        $validated = $request->validate([
+            'returned_date' => [
+                'required',
+                'date',
+            ],
+        ]);
+
+        $assignmentService->returnAsset(
+            asset: $asset,
+            returnedBy: $request->user(),
+            returnedDate: $validated['returned_date']
+        );
+
+        return redirect()
+            ->route('assets.show', $asset)
+            ->with(
+                'success',
+                'Asset returned successfully.'
+            );
     }
 }

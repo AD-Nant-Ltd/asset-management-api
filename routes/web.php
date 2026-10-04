@@ -62,6 +62,16 @@ Route::middleware(['auth', 'active'])->group(function () {
         [AssetAssignmentController::class, 'store']
     )->name('assets.assign.store');
 
+    Route::get(
+        '/assets/{asset}/return',
+        [AssetAssignmentController::class, 'createReturn']
+    )->name('assets.return.create');
+
+    Route::post(
+        '/assets/{asset}/return',
+        [AssetAssignmentController::class, 'storeReturn']
+    )->name('assets.return.store');
+
     Route::middleware('admin')->group(function () {
         Route::resource('users', UserController::class)->only([
             'index',
