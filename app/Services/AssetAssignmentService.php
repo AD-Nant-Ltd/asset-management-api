@@ -6,6 +6,7 @@ use App\Models\Asset;
 use App\Models\AssetAssignment;
 use App\Models\Staff;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -41,6 +42,40 @@ class AssetAssignmentService
                 'returned_by_id' => null,
                 'notes' => $notes,
             ]);
+        });
+    }
+
+    public function returnAsset(
+        Asset $asset,
+        User $returnedBy,
+        string $returnedDate
+    ): AssetAssignment {
+        return DB::transaction(function () use (
+            $asset,
+            $returnedBy,
+            $returnedDate
+        ) {
+            $lockedAsset = Asset::lockForUpdate()
+                ->findOrFail($asset->id);
+
+            $assignment = $this->ensureAssetCanBeReturned(
+                $lockedAsset
+            );
+
+            $returnDate = Carbon::parse($returnedDate);
+
+            if ($returnDate->lt($assignment->assigned_date)) {
+                throw ValidationException::withMessages([
+                    'returned_date' => 'The return date cannot be before the assignment date.',
+                ]);
+            }
+
+            $assignment->update([
+                'returned_date' => $returnedDate,
+                'returned_by_id' => $returnedBy->id,
+            ]);
+
+            return $assignment->fresh();
         });
     }
 
@@ -93,6 +128,25 @@ class AssetAssignmentService
                 'asset' => 'This asset is already assigned to a staff member.',
             ]);
         }
+    }
+
+    public function ensureAssetCanBeReturned(
+        Asset $asset
+    ): AssetAssignment {
+        $assignment = AssetAssignment::where(
+            'asset_id',
+            $asset->id
+        )
+            ->whereNull('returned_date')
+            ->first();
+
+        if ($assignment === null) {
+            throw ValidationException::withMessages([
+                'asset' => 'This asset does not have an active assignment to return.',
+            ]);
+        }
+
+        return $assignment;
     }
 
     private function ensureStaffCanReceiveAsset(Staff $staff): void

@@ -159,8 +159,15 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h2 class="h5 mb-0">Current Assignment</h2>
 
-                    @if (
-                        ! $asset->activeAssignment &&
+                    @if ($asset->activeAssignment)
+                        <a
+                            href="{{ route('assets.return.create', $asset) }}"
+                            class="btn btn-primary btn-sm"
+                        >
+                            Return Asset
+                        </a>
+
+                    @elseif (
                         ! $asset->archived_at &&
                         (
                             $asset->retired_date === null ||
