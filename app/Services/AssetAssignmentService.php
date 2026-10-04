@@ -54,13 +54,19 @@ class AssetAssignmentService
             ]);
         }
 
-        if ($asset->retired_date !== null) {
+        if (
+            $asset->retired_date !== null &&
+            $asset->retired_date->lte(today())
+        ) {
             throw ValidationException::withMessages([
                 'asset' => 'Retired assets cannot be assigned.',
             ]);
         }
 
-        if ($asset->disposal_date !== null) {
+        if (
+            $asset->disposal_date !== null &&
+            $asset->disposal_date->lte(today())
+        ) {
             throw ValidationException::withMessages([
                 'asset' => 'Disposed assets cannot be assigned.',
             ]);

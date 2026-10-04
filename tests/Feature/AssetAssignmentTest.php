@@ -421,6 +421,112 @@ class AssetAssignmentTest extends TestCase
         ]);
     }
 
+    public function test_future_retirement_date_does_not_prevent_asset_assignment(): void
+    {
+        $user = $this->createApplicationUser();
+        $staff = $this->createStaff();
+
+        $asset = $this->createAsset(
+            'ASSET-FUTURE-RETIREMENT'
+        );
+
+        $asset->update([
+            'retired_date' => today()
+                ->addDays(30)
+                ->toDateString(),
+        ]);
+
+        $this->actingAs($user);
+
+        $assetPageResponse = $this->get(
+            route('assets.show', $asset)
+        );
+
+        $assetPageResponse->assertOk();
+        $assetPageResponse->assertSee('In Stock');
+        $assetPageResponse->assertSee('Assign Asset');
+
+        $assignmentFormResponse = $this->get(
+            route('assets.assign.create', $asset)
+        );
+
+        $assignmentFormResponse->assertOk();
+
+        $assignmentResponse = $this->post(
+            route('assets.assign.store', $asset),
+            [
+                'assigned_to_id' => $staff->id,
+                'assigned_date' => today()->toDateString(),
+                'notes' => 'Assigned before scheduled retirement.',
+            ]
+        );
+
+        $assignmentResponse->assertRedirect(
+            route('assets.show', $asset)
+        );
+
+        $this->assertDatabaseHas('asset_assignments', [
+            'asset_id' => $asset->id,
+            'assigned_to_id' => $staff->id,
+            'assigned_by_id' => $user->id,
+            'returned_date' => null,
+            'notes' => 'Assigned before scheduled retirement.',
+        ]);
+    }
+
+    public function test_future_disposal_date_does_not_prevent_asset_assignment(): void
+    {
+        $user = $this->createApplicationUser();
+        $staff = $this->createStaff();
+
+        $asset = $this->createAsset(
+            'ASSET-FUTURE-DISPOSAL'
+        );
+
+        $asset->update([
+            'disposal_date' => today()
+                ->addDays(30)
+                ->toDateString(),
+        ]);
+
+        $this->actingAs($user);
+
+        $assetPageResponse = $this->get(
+            route('assets.show', $asset)
+        );
+
+        $assetPageResponse->assertOk();
+        $assetPageResponse->assertSee('In Stock');
+        $assetPageResponse->assertSee('Assign Asset');
+
+        $assignmentFormResponse = $this->get(
+            route('assets.assign.create', $asset)
+        );
+
+        $assignmentFormResponse->assertOk();
+
+        $assignmentResponse = $this->post(
+            route('assets.assign.store', $asset),
+            [
+                'assigned_to_id' => $staff->id,
+                'assigned_date' => today()->toDateString(),
+                'notes' => 'Assigned before scheduled disposal.',
+            ]
+        );
+
+        $assignmentResponse->assertRedirect(
+            route('assets.show', $asset)
+        );
+
+        $this->assertDatabaseHas('asset_assignments', [
+            'asset_id' => $asset->id,
+            'assigned_to_id' => $staff->id,
+            'assigned_by_id' => $user->id,
+            'returned_date' => null,
+            'notes' => 'Assigned before scheduled disposal.',
+        ]);
+    }
+
     public function test_non_operational_asset_cannot_be_assigned(): void
     {
         $user = $this->createApplicationUser();

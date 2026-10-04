@@ -3,6 +3,7 @@
 @section('title', 'Asset Details')
 
 @section('content')
+
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="{{ route('dashboard') }}">
@@ -161,8 +162,14 @@
                     @if (
                         ! $asset->activeAssignment &&
                         ! $asset->archived_at &&
-                        ! $asset->retired_date &&
-                        ! $asset->disposal_date &&
+                        (
+                            $asset->retired_date === null ||
+                            $asset->retired_date->gt(today())
+                        ) &&
+                        (
+                            $asset->disposal_date === null ||
+                            $asset->disposal_date->gt(today())
+                        ) &&
                         $asset->assetStatus->asset_status === 'Operational'
                     )
                         <a
@@ -201,10 +208,17 @@
                                 {{ $asset->activeAssignment->notes ?? 'No notes recorded' }}
                             </dd>
                         </dl>
+
                     @elseif (
                         ! $asset->archived_at &&
-                        ! $asset->retired_date &&
-                        ! $asset->disposal_date &&
+                        (
+                            $asset->retired_date === null ||
+                            $asset->retired_date->gt(today())
+                        ) &&
+                        (
+                            $asset->disposal_date === null ||
+                            $asset->disposal_date->gt(today())
+                        ) &&
                         $asset->assetStatus->asset_status === 'Operational'
                     )
                         <span class="badge text-bg-success mb-2">
@@ -214,6 +228,7 @@
                         <p class="text-muted mb-0">
                             This asset does not currently have an active staff assignment.
                         </p>
+
                     @else
                         <span class="badge text-bg-secondary mb-2">
                             Unavailable
@@ -440,4 +455,5 @@
 
     </div>
 </main>
+
 @endsection
