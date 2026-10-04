@@ -248,7 +248,11 @@ class AssetController extends Controller
             'assetCondition',
             'activeAssignment.assignedTo',
             'activeAssignment.assignedBy.staff',
-            'assignments.assignedTo',
+            'assignments' => function ($query) {
+                $query->with('assignedTo')
+                    ->orderByDesc('assigned_date')
+                    ->orderByDesc('id');
+            },
             'incidents',
         ]);
 
