@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Asset extends Model
 {
@@ -55,6 +56,12 @@ class Asset extends Model
     public function assignments(): HasMany
     {
         return $this->hasMany(AssetAssignment::class);
+    }
+
+    public function activeAssignment(): HasOne
+    {
+        return $this->hasOne(AssetAssignment::class)
+            ->whereNull('returned_date');
     }
 
     public function incidents(): HasMany

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssetAssignmentController;
 use App\Http\Controllers\AssetClassificationController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\Auth\LoginController;
@@ -50,6 +51,16 @@ Route::middleware(['auth', 'active'])->group(function () {
         '/assets/{asset}/archive',
         [AssetController::class, 'archive']
     )->name('assets.archive');
+
+    Route::get(
+        '/assets/{asset}/assign',
+        [AssetAssignmentController::class, 'create']
+    )->name('assets.assign.create');
+
+    Route::post(
+        '/assets/{asset}/assign',
+        [AssetAssignmentController::class, 'store']
+    )->name('assets.assign.store');
 
     Route::middleware('admin')->group(function () {
         Route::resource('users', UserController::class)->only([

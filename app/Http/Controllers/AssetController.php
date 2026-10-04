@@ -117,6 +117,8 @@ class AssetController extends Controller
             'assetSubtype.assetType',
             'assetStatus',
             'assetCondition',
+            'activeAssignment.assignedTo',
+            'activeAssignment.assignedBy.staff',
             'assignments.assignedTo',
             'incidents',
         ]);

@@ -86,7 +86,6 @@
 
     <div class="row g-4">
 
-        {{-- Identification --}}
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm">
                 <div class="card-header">
@@ -119,7 +118,6 @@
             </div>
         </div>
 
-        {{-- Current State --}}
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm">
                 <div class="card-header">
@@ -155,7 +153,80 @@
             </div>
         </div>
 
-        {{-- Lifecycle --}}
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0">Current Assignment</h2>
+
+                    @if (
+                        ! $asset->activeAssignment &&
+                        ! $asset->archived_at &&
+                        ! $asset->retired_date &&
+                        ! $asset->disposal_date &&
+                        $asset->assetStatus->asset_status === 'Operational'
+                    )
+                        <a
+                            href="{{ route('assets.assign.create', $asset) }}"
+                            class="btn btn-primary btn-sm"
+                        >
+                            Assign Asset
+                        </a>
+                    @endif
+                </div>
+
+                <div class="card-body">
+                    @if ($asset->activeAssignment)
+                        <dl class="row mb-0">
+                            <dt class="col-sm-3">Current Holder</dt>
+                            <dd class="col-sm-9">
+                                <strong>
+                                    {{ $asset->activeAssignment->assignedTo->forename }}
+                                    {{ $asset->activeAssignment->assignedTo->surname }}
+                                </strong>
+                            </dd>
+
+                            <dt class="col-sm-3">Assigned Date</dt>
+                            <dd class="col-sm-9">
+                                {{ $asset->activeAssignment->assigned_date?->format('d/m/Y') }}
+                            </dd>
+
+                            <dt class="col-sm-3">Processed By</dt>
+                            <dd class="col-sm-9">
+                                {{ $asset->activeAssignment->assignedBy->staff->forename }}
+                                {{ $asset->activeAssignment->assignedBy->staff->surname }}
+                            </dd>
+
+                            <dt class="col-sm-3">Notes</dt>
+                            <dd class="col-sm-9">
+                                {{ $asset->activeAssignment->notes ?? 'No notes recorded' }}
+                            </dd>
+                        </dl>
+                    @elseif (
+                        ! $asset->archived_at &&
+                        ! $asset->retired_date &&
+                        ! $asset->disposal_date &&
+                        $asset->assetStatus->asset_status === 'Operational'
+                    )
+                        <span class="badge text-bg-success mb-2">
+                            In Stock
+                        </span>
+
+                        <p class="text-muted mb-0">
+                            This asset does not currently have an active staff assignment.
+                        </p>
+                    @else
+                        <span class="badge text-bg-secondary mb-2">
+                            Unavailable
+                        </span>
+
+                        <p class="text-muted mb-0">
+                            This asset is not currently eligible for assignment.
+                        </p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header">
@@ -165,50 +236,35 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">
-                                Delivery Date
-                            </div>
-
+                            <div class="text-muted small">Delivery Date</div>
                             <div>
                                 {{ $asset->delivery_date?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
                         </div>
 
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">
-                                Purchase Date
-                            </div>
-
+                            <div class="text-muted small">Purchase Date</div>
                             <div>
                                 {{ $asset->purchase_date?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
                         </div>
 
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">
-                                Warranty Expiry
-                            </div>
-
+                            <div class="text-muted small">Warranty Expiry</div>
                             <div>
                                 {{ $asset->warranty_expiry?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
                         </div>
 
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">
-                                Retired Date
-                            </div>
-
+                            <div class="text-muted small">Retired Date</div>
                             <div>
                                 {{ $asset->retired_date?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
                         </div>
 
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">
-                                Disposal Date
-                            </div>
-
+                            <div class="text-muted small">Disposal Date</div>
                             <div>
                                 {{ $asset->disposal_date?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
@@ -218,7 +274,6 @@
             </div>
         </div>
 
-        {{-- Assignment History --}}
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header">
@@ -271,7 +326,6 @@
             </div>
         </div>
 
-        {{-- Incident History --}}
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header">
@@ -293,7 +347,6 @@
             </div>
         </div>
 
-        {{-- Archive --}}
         @if (! $asset->archived_at)
             <div class="col-12">
                 <div class="card border-warning shadow-sm">
