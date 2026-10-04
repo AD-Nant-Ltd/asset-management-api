@@ -11,17 +11,146 @@ use Illuminate\Validation\Rule;
 
 class AssetController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $assets = Asset::with([
+        $validated = $request->validate([
+            'search' => [
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'availability' => [
+                'nullable',
+                Rule::in([
+                    'all',
+                    'in_stock',
+                    'assigned',
+                    'unavailable',
+                ]),
+            ],
+        ]);
+
+        $search = trim($validated['search'] ?? '');
+        $availability = $validated['availability'] ?? 'all';
+
+        $query = Asset::with([
             'assetSubtype.assetType',
             'assetStatus',
             'assetCondition',
-        ])
+            'activeAssignment.assignedTo',
+        ]);
+
+        if ($search !== '') {
+            $query->where(function ($query) use ($search) {
+                $query
+                    ->where(
+                        'asset_tag',
+                        'like',
+                        '%' . $search . '%'
+                    )
+                    ->orWhere(
+                        'serial_num',
+                        'like',
+                        '%' . $search . '%'
+                    )
+                    ->orWhereHas(
+                        'assetSubtype',
+                        function ($query) use ($search) {
+                            $query->where(
+                                'asset_subtype',
+                                'like',
+                                '%' . $search . '%'
+                            );
+                        }
+                    )
+                    ->orWhereHas(
+                        'assetSubtype.assetType',
+                        function ($query) use ($search) {
+                            $query->where(
+                                'asset_type',
+                                'like',
+                                '%' . $search . '%'
+                            );
+                        }
+                    );
+            });
+        }
+
+        if ($availability === 'assigned') {
+            $query->whereHas('activeAssignment');
+        }
+
+        if ($availability === 'in_stock') {
+            $query
+                ->whereDoesntHave('activeAssignment')
+                ->whereNull('archived_at')
+                ->whereHas(
+                    'assetStatus',
+                    function ($query) {
+                        $query->where(
+                            'asset_status',
+                            'Operational'
+                        );
+                    }
+                )
+                ->where(function ($query) {
+                    $query
+                        ->whereNull('retired_date')
+                        ->orWhereDate(
+                            'retired_date',
+                            '>',
+                            today()
+                        );
+                })
+                ->where(function ($query) {
+                    $query
+                        ->whereNull('disposal_date')
+                        ->orWhereDate(
+                            'disposal_date',
+                            '>',
+                            today()
+                        );
+                });
+        }
+
+        if ($availability === 'unavailable') {
+            $query
+                ->whereDoesntHave('activeAssignment')
+                ->where(function ($query) {
+                    $query
+                        ->whereNotNull('archived_at')
+                        ->orWhereHas(
+                            'assetStatus',
+                            function ($query) {
+                                $query->where(
+                                    'asset_status',
+                                    '!=',
+                                    'Operational'
+                                );
+                            }
+                        )
+                        ->orWhereDate(
+                            'retired_date',
+                            '<=',
+                            today()
+                        )
+                        ->orWhereDate(
+                            'disposal_date',
+                            '<=',
+                            today()
+                        );
+                });
+        }
+
+        $assets = $query
             ->orderBy('asset_tag')
             ->get();
 
-        return view('assets.index', compact('assets'));
+        return view('assets.index', compact(
+            'assets',
+            'search',
+            'availability'
+        ));
     }
 
     public function create()
