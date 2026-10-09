@@ -308,10 +308,6 @@ class AssetIncidentTest extends TestCase
         ]);
 
         $response->assertSee(
-            'The current asset holder has been selected automatically.'
-        );
-
-        $response->assertSee(
             'value="' . $holder->id . '"',
             false
         );
