@@ -27,7 +27,6 @@
 </nav>
 
 <main class="container py-5">
-
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -113,7 +112,6 @@
     @endif
 
     <div class="row g-4">
-
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm">
                 <div class="card-header">
@@ -193,7 +191,6 @@
                         >
                             Return Asset
                         </a>
-
                     @elseif (
                         ! $asset->archived_at &&
                         ($asset->retired_date === null || $asset->retired_date->gt(today())) &&
@@ -240,7 +237,6 @@
                                 {{ $asset->activeAssignment->notes ?? 'No notes recorded' }}
                             </dd>
                         </dl>
-
                     @elseif (
                         ! $asset->archived_at &&
                         ($asset->retired_date === null || $asset->retired_date->gt(today())) &&
@@ -254,7 +250,6 @@
                         <p class="text-muted mb-0">
                             This asset does not currently have an active staff assignment.
                         </p>
-
                     @else
                         <span class="badge text-bg-secondary mb-2">
                             Unavailable
@@ -391,7 +386,7 @@
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h2 class="h5 mb-0">
-                        Incident History
+                        Incidents
                     </h2>
 
                     <a
@@ -419,14 +414,20 @@
                                     $incident->incidentStatus->incident_status
                                     !== 'Resolved'
                             );
+
+                            $historicalIncidents = $asset->incidents->filter(
+                                fn ($incident) =>
+                                    $incident->incidentStatus->incident_status
+                                    === 'Resolved'
+                            );
                         @endphp
 
-                        @if ($currentIncidents->isNotEmpty())
-                            <h3 class="h6">
-                                Current Incidents
-                            </h3>
+                        <h3 class="h6">
+                            Current Incidents
+                        </h3>
 
-                            <div class="table-responsive">
+                        @if ($currentIncidents->isNotEmpty())
+                            <div class="table-responsive mb-4">
                                 <table class="table table-sm table-hover align-middle mb-0">
                                     <thead class="table-light">
                                         <tr>
@@ -474,8 +475,87 @@
                                 </table>
                             </div>
                         @else
-                            <p class="text-muted mb-0">
+                            <p class="text-muted mb-4">
                                 No current incidents require management.
+                            </p>
+                        @endif
+
+                        <h3 class="h6">
+                            Incident History
+                        </h3>
+
+                        @if ($historicalIncidents->isNotEmpty())
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Incident</th>
+                                            <th>Type</th>
+                                            <th>Incident Date</th>
+                                            <th>Affected Staff</th>
+                                            <th>Assigned To</th>
+                                            <th>Resolution Date</th>
+                                            <th>Action Taken</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach ($historicalIncidents as $incident)
+                                            <tr>
+                                                <td>
+                                                    #{{ $incident->id }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $incident->incidentType->incident_type }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $incident->incident_date->format('d/m/Y') }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $incident->affectedStaff->forename }}
+                                                    {{ $incident->affectedStaff->surname }}
+                                                </td>
+
+                                                <td>
+                                                    @if ($incident->assignedToUser?->staff)
+                                                        {{ $incident->assignedToUser->staff->forename }}
+                                                        {{ $incident->assignedToUser->staff->surname }}
+                                                    @else
+                                                        Unassigned
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    {{ $incident->resolved_date?->format('d/m/Y') ?? '—' }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $incident->action_taken ?? '—' }}
+                                                </td>
+
+                                                <td class="text-end">
+                                                    <a
+                                                        href="{{ route(
+                                                            'assets.incidents.edit',
+                                                            [$asset, $incident]
+                                                        ) }}"
+                                                        class="btn btn-outline-secondary btn-sm"
+                                                    >
+                                                        View / Manage
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <p class="text-muted mb-0">
+                                No resolved incidents recorded.
                             </p>
                         @endif
                     @endif
@@ -519,7 +599,6 @@
             >
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-
                         <div class="modal-header">
                             <h2
                                 class="modal-title fs-5"
@@ -570,12 +649,10 @@
                                 </button>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
         @endif
-
     </div>
 </main>
 @endsection

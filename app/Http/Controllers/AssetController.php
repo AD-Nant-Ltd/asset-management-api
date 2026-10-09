@@ -253,7 +253,16 @@ class AssetController extends Controller
                     ->orderByDesc('assigned_date')
                     ->orderByDesc('id');
             },
-            'incidents',
+            'incidents' => function ($query) {
+                $query->with([
+                    'incidentType',
+                    'incidentStatus',
+                    'affectedStaff',
+                    'assignedToUser.staff',
+                ])
+                    ->orderByDesc('incident_date')
+                    ->orderByDesc('id');
+            },
         ]);
 
         return view('assets.show', compact('asset'));
