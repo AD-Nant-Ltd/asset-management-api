@@ -182,6 +182,10 @@ class AssetIncidentController extends Controller
             ->where('active', true)
             ->value('id');
 
+        $isResolved =
+            (int) $request->input('incident_status_id')
+            === (int) $resolvedStatusId;
+
         $validated = $request->validate([
             'incident_status_id' => [
                 'required',
@@ -222,20 +226,23 @@ class AssetIncidentController extends Controller
                 'max:99999999.99',
             ],
             'resolved_date' => [
-                Rule::requiredIf(
-                    (int) $request->input('incident_status_id')
-                    === (int) $resolvedStatusId
-                ),
+                Rule::requiredIf($isResolved),
+                Rule::prohibitedIf(! $isResolved),
                 'nullable',
                 'date',
                 'after_or_equal:'
                     . $incident->incident_date->format('Y-m-d'),
             ],
-        ]);
+        ], [
+            'resolved_date.required' =>
+                'A resolution date is required when the incident status is Resolved.',
 
-        $isResolved =
-            (int) $validated['incident_status_id']
-            === (int) $resolvedStatusId;
+            'resolved_date.prohibited' =>
+                'A resolution date can only be recorded when the incident status is Resolved.',
+
+            'resolved_date.after_or_equal' =>
+                'The resolution date cannot be before the incident date.',
+        ]);
 
         $incident->update([
             'incident_status_id' =>

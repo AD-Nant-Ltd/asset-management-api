@@ -634,13 +634,80 @@ class AssetIncidentManagementTest extends TestCase
                 'warranty_claim_date' => null,
                 'warranty_excess' => null,
                 'associated_cost' => null,
-
-                'resolved_date' => '2026-10-10',
+                'resolved_date' => null,
             ]
         );
 
         $response->assertRedirect(
             route('assets.show', $asset)
+        );
+
+        $incident->refresh();
+
+        $this->assertSame(
+            $openStatus->id,
+            $incident->incident_status_id
+        );
+
+        $this->assertNull(
+            $incident->resolved_date
+        );
+    }
+
+    public function test_resolution_date_is_rejected_when_incident_is_not_resolved(): void
+    {
+        $user = $this->createApplicationUser();
+
+        $asset = $this->createAsset();
+
+        $staff = $this->createStaff();
+
+        $incidentType = $this->createIncidentType();
+
+        $openStatus = $this->createIncidentStatus('Open');
+
+        $incident = $this->createIncident(
+            $asset,
+            $staff,
+            $incidentType,
+            $openStatus
+        );
+
+        $this->actingAs($user);
+
+        $response = $this
+            ->from(
+                route(
+                    'assets.incidents.edit',
+                    [$asset, $incident]
+                )
+            )
+            ->put(
+                route(
+                    'assets.incidents.update',
+                    [$asset, $incident]
+                ),
+                [
+                    'incident_status_id' => $openStatus->id,
+                    'assigned_to_user_id' => $user->id,
+                    'action_taken' => null,
+                    'warranty_claim_ref' => null,
+                    'warranty_claim_date' => null,
+                    'warranty_excess' => null,
+                    'associated_cost' => null,
+                    'resolved_date' => '2026-10-10',
+                ]
+            );
+
+        $response->assertRedirect(
+            route(
+                'assets.incidents.edit',
+                [$asset, $incident]
+            )
+        );
+
+        $response->assertSessionHasErrors(
+            'resolved_date'
         );
 
         $incident->refresh();
