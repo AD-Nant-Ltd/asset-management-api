@@ -83,6 +83,16 @@ Route::middleware(['auth', 'active'])->group(function () {
         [AssetIncidentController::class, 'store']
     )->name('assets.incidents.store');
 
+    Route::get(
+        '/assets/{asset}/incidents/{incident}/edit',
+        [AssetIncidentController::class, 'edit']
+    )->name('assets.incidents.edit');
+
+    Route::put(
+        '/assets/{asset}/incidents/{incident}',
+        [AssetIncidentController::class, 'update']
+    )->name('assets.incidents.update');
+
     Route::middleware('admin')->group(function () {
         Route::resource('users', UserController::class)->only([
             'index',

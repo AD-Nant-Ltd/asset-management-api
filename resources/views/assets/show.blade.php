@@ -27,6 +27,7 @@
 </nav>
 
 <main class="container py-5">
+
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -112,6 +113,7 @@
     @endif
 
     <div class="row g-4">
+
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm">
                 <div class="card-header">
@@ -191,16 +193,11 @@
                         >
                             Return Asset
                         </a>
+
                     @elseif (
                         ! $asset->archived_at &&
-                        (
-                            $asset->retired_date === null ||
-                            $asset->retired_date->gt(today())
-                        ) &&
-                        (
-                            $asset->disposal_date === null ||
-                            $asset->disposal_date->gt(today())
-                        ) &&
+                        ($asset->retired_date === null || $asset->retired_date->gt(today())) &&
+                        ($asset->disposal_date === null || $asset->disposal_date->gt(today())) &&
                         $asset->assetStatus->asset_status === 'Operational'
                     )
                         <a
@@ -216,6 +213,7 @@
                     @if ($asset->activeAssignment)
                         <dl class="row mb-0">
                             <dt class="col-sm-3">Current Holder</dt>
+
                             <dd class="col-sm-9">
                                 <strong>
                                     {{ $asset->activeAssignment->assignedTo->forename }}
@@ -224,31 +222,29 @@
                             </dd>
 
                             <dt class="col-sm-3">Assigned Date</dt>
+
                             <dd class="col-sm-9">
                                 {{ $asset->activeAssignment->assigned_date?->format('d/m/Y') }}
                             </dd>
 
                             <dt class="col-sm-3">Processed By</dt>
+
                             <dd class="col-sm-9">
                                 {{ $asset->activeAssignment->assignedBy->staff->forename }}
                                 {{ $asset->activeAssignment->assignedBy->staff->surname }}
                             </dd>
 
                             <dt class="col-sm-3">Notes</dt>
+
                             <dd class="col-sm-9">
                                 {{ $asset->activeAssignment->notes ?? 'No notes recorded' }}
                             </dd>
                         </dl>
+
                     @elseif (
                         ! $asset->archived_at &&
-                        (
-                            $asset->retired_date === null ||
-                            $asset->retired_date->gt(today())
-                        ) &&
-                        (
-                            $asset->disposal_date === null ||
-                            $asset->disposal_date->gt(today())
-                        ) &&
+                        ($asset->retired_date === null || $asset->retired_date->gt(today())) &&
+                        ($asset->disposal_date === null || $asset->disposal_date->gt(today())) &&
                         $asset->assetStatus->asset_status === 'Operational'
                     )
                         <span class="badge text-bg-success mb-2">
@@ -258,6 +254,7 @@
                         <p class="text-muted mb-0">
                             This asset does not currently have an active staff assignment.
                         </p>
+
                     @else
                         <span class="badge text-bg-secondary mb-2">
                             Unavailable
@@ -280,35 +277,50 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">Delivery Date</div>
+                            <div class="text-muted small">
+                                Delivery Date
+                            </div>
+
                             <div>
                                 {{ $asset->delivery_date?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
                         </div>
 
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">Purchase Date</div>
+                            <div class="text-muted small">
+                                Purchase Date
+                            </div>
+
                             <div>
                                 {{ $asset->purchase_date?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
                         </div>
 
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">Warranty Expiry</div>
+                            <div class="text-muted small">
+                                Warranty Expiry
+                            </div>
+
                             <div>
                                 {{ $asset->warranty_expiry?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
                         </div>
 
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">Retired Date</div>
+                            <div class="text-muted small">
+                                Retired Date
+                            </div>
+
                             <div>
                                 {{ $asset->retired_date?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
                         </div>
 
                         <div class="col-md-6 col-lg">
-                            <div class="text-muted small">Disposal Date</div>
+                            <div class="text-muted small">
+                                Disposal Date
+                            </div>
+
                             <div>
                                 {{ $asset->disposal_date?->format('d/m/Y') ?? 'Not recorded' }}
                             </div>
@@ -321,7 +333,9 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h2 class="h5 mb-0">Assignment History</h2>
+                    <h2 class="h5 mb-0">
+                        Assignment History
+                    </h2>
                 </div>
 
                 <div class="card-body p-0">
@@ -376,7 +390,9 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="h5 mb-0">Incident History</h2>
+                    <h2 class="h5 mb-0">
+                        Incident History
+                    </h2>
 
                     <a
                         href="{{ route('assets.incidents.create', $asset) }}"
@@ -392,10 +408,76 @@
                             No incidents recorded for this asset.
                         </p>
                     @else
-                        <p class="mb-0">
+                        <p class="mb-3">
                             {{ $asset->incidents->count() }}
                             incident record(s) are associated with this asset.
                         </p>
+
+                        @php
+                            $currentIncidents = $asset->incidents->filter(
+                                fn ($incident) =>
+                                    $incident->incidentStatus->incident_status
+                                    !== 'Resolved'
+                            );
+                        @endphp
+
+                        @if ($currentIncidents->isNotEmpty())
+                            <h3 class="h6">
+                                Current Incidents
+                            </h3>
+
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Incident</th>
+                                            <th>Type</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach ($currentIncidents as $incident)
+                                            <tr>
+                                                <td>
+                                                    #{{ $incident->id }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $incident->incidentType->incident_type }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $incident->incident_date->format('d/m/Y') }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $incident->incidentStatus->incident_status }}
+                                                </td>
+
+                                                <td class="text-end">
+                                                    <a
+                                                        href="{{ route(
+                                                            'assets.incidents.edit',
+                                                            [$asset, $incident]
+                                                        ) }}"
+                                                        class="btn btn-outline-primary btn-sm"
+                                                    >
+                                                        Manage
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <p class="text-muted mb-0">
+                                No current incidents require management.
+                            </p>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -405,7 +487,9 @@
             <div class="col-12">
                 <div class="card border-warning shadow-sm">
                     <div class="card-header">
-                        <h2 class="h5 mb-0">Archive Asset</h2>
+                        <h2 class="h5 mb-0">
+                            Archive Asset
+                        </h2>
                     </div>
 
                     <div class="card-body">
@@ -435,6 +519,7 @@
             >
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
+
                         <div class="modal-header">
                             <h2
                                 class="modal-title fs-5"
@@ -485,10 +570,12 @@
                                 </button>
                             </form>
                         </div>
+
                     </div>
                 </div>
             </div>
         @endif
+
     </div>
 </main>
 @endsection
