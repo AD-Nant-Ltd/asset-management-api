@@ -145,6 +145,25 @@
                         </div>
                     </div>
 
+                    <div class="col-12 col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h2 class="h5">Incident Configuration</h2>
+
+                                <p class="text-muted">
+                                    Configure incident types and statuses used throughout the incident-management process.
+                                </p>
+
+                                <a
+                                    href="{{ route('incident-configuration.index') }}"
+                                    class="btn btn-primary"
+                                >
+                                    Manage Incident Configuration
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                 @endif
 
             </div>

@@ -5,6 +5,7 @@ use App\Http\Controllers\AssetClassificationController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssetIncidentController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\IncidentConfigurationController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -146,5 +147,30 @@ Route::middleware(['auth', 'active'])->group(function () {
             '/asset-classification/conditions/{assetCondition}',
             [AssetClassificationController::class, 'updateAssetCondition']
         )->name('asset-classification.conditions.update');
+
+        Route::get(
+            '/incident-configuration',
+            [IncidentConfigurationController::class, 'index']
+        )->name('incident-configuration.index');
+
+        Route::post(
+            '/incident-configuration/types',
+            [IncidentConfigurationController::class, 'storeIncidentType']
+        )->name('incident-configuration.types.store');
+
+        Route::put(
+            '/incident-configuration/types/{incidentType}',
+            [IncidentConfigurationController::class, 'updateIncidentType']
+        )->name('incident-configuration.types.update');
+
+        Route::post(
+            '/incident-configuration/statuses',
+            [IncidentConfigurationController::class, 'storeIncidentStatus']
+        )->name('incident-configuration.statuses.store');
+
+        Route::put(
+            '/incident-configuration/statuses/{incidentStatus}',
+            [IncidentConfigurationController::class, 'updateIncidentStatus']
+        )->name('incident-configuration.statuses.update');
     });
 });
