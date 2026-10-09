@@ -3,7 +3,6 @@
 @section('title', 'Asset Details')
 
 @section('content')
-
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="{{ route('dashboard') }}">
@@ -28,10 +27,37 @@
 </nav>
 
 <main class="container py-5">
-
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('review_asset_state'))
+        <div class="alert alert-warning d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Review asset state</strong>
+
+                <div>
+                    Consider whether this incident means the asset's
+                    <strong>Condition</strong> or
+                    <strong>Operational Status</strong>
+                    should also be updated.
+                </div>
+            </div>
+
+            @if (! $asset->archived_at)
+                <a
+                    href="{{ route('assets.edit', $asset) }}"
+                    class="btn btn-warning ms-3"
+                >
+                    Review Asset
+                </a>
+            @else
+                <span class="text-muted ms-3">
+                    Archived asset
+                </span>
+            @endif
         </div>
     @endif
 
@@ -86,7 +112,6 @@
     @endif
 
     <div class="row g-4">
-
         <div class="col-12 col-lg-6">
             <div class="card h-100 shadow-sm">
                 <div class="card-header">
@@ -166,7 +191,6 @@
                         >
                             Return Asset
                         </a>
-
                     @elseif (
                         ! $asset->archived_at &&
                         (
@@ -215,7 +239,6 @@
                                 {{ $asset->activeAssignment->notes ?? 'No notes recorded' }}
                             </dd>
                         </dl>
-
                     @elseif (
                         ! $asset->archived_at &&
                         (
@@ -235,7 +258,6 @@
                         <p class="text-muted mb-0">
                             This asset does not currently have an active staff assignment.
                         </p>
-
                     @else
                         <span class="badge text-bg-secondary mb-2">
                             Unavailable
@@ -336,7 +358,10 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted py-4">
+                                        <td
+                                            colspan="4"
+                                            class="text-center text-muted py-4"
+                                        >
                                             No assignment history recorded.
                                         </td>
                                     </tr>
@@ -350,8 +375,15 @@
 
         <div class="col-12">
             <div class="card shadow-sm">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h2 class="h5 mb-0">Incident History</h2>
+
+                    <a
+                        href="{{ route('assets.incidents.create', $asset) }}"
+                        class="btn btn-primary btn-sm"
+                    >
+                        Record Incident
+                    </a>
                 </div>
 
                 <div class="card-body">
@@ -403,7 +435,6 @@
             >
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-
                         <div class="modal-header">
                             <h2
                                 class="modal-title fs-5"
@@ -454,13 +485,10 @@
                                 </button>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
         @endif
-
     </div>
 </main>
-
 @endsection

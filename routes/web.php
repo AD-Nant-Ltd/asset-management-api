@@ -3,6 +3,7 @@
 use App\Http\Controllers\AssetAssignmentController;
 use App\Http\Controllers\AssetClassificationController;
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetIncidentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\UserController;
@@ -71,6 +72,16 @@ Route::middleware(['auth', 'active'])->group(function () {
         '/assets/{asset}/return',
         [AssetAssignmentController::class, 'storeReturn']
     )->name('assets.return.store');
+
+    Route::get(
+        '/assets/{asset}/incidents/create',
+        [AssetIncidentController::class, 'create']
+    )->name('assets.incidents.create');
+
+    Route::post(
+        '/assets/{asset}/incidents',
+        [AssetIncidentController::class, 'store']
+    )->name('assets.incidents.store');
 
     Route::middleware('admin')->group(function () {
         Route::resource('users', UserController::class)->only([
